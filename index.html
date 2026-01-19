@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Will you be my valentine?</title>
+        <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700&display=swap">
+        <link rel="stylesheet" href="styles.css" />
+
+    </head>
+    <body>
+        <main class="container">
+            <div class="header">
+                <h1 id="title"></h1>
+                <p id="text"></p>
+            </div>
+            <div class="photo">
+                <img id="img" src="" alt="photo">
+                <video id="video" autoplay loop muted playsinline></video>
+            </div>
+            <div class="buttons">
+                <button id="yesBtn" type="button">Yes</button>
+                <button id="noBtn" type="button">No</button>
+            </div>
+            <div class="valentine">
+                <p id="valentineMsg" style="display: none;">
+            Happy Valentine’s Day Boo!
+            </p>
+            </div>
+            
+        </main>
+         <script>
+  const firstScreen = {
+    type: "image",
+    title: "Will you be my Valentine?",
+    text: "",
+    src: "Images/us.jpg"
+  };
+
+  const noScreens = [
+    { type: "image", title: "Wait— fr??", text: "That's kinda illegal.", src: "Images/Wait.jpg" },
+    { type: "image", title: "Seriously??", text: "", src: "Images/seriously.jpg" },
+    { type: "image", title: "Fine. I'm not talking", text: "", src: "Images/fine.jpg" },
+    { type: "image", title: "Did you turn gay or something?", text: "", src: "Images/gay.jpg" },
+    { type: "video", title: "Quit Playing fool", text: "I know you love me", src: "Images/fool.mp4" },
+    { type: "image", title: "This ain't funny", text: "🥺", src: "Images/goof.jpg" },
+  ];
+
+  const yesScreen = {
+    type: "image",
+    title: "That's right bitchh!!",
+    text: "There's no other option",
+    src: "Images/haha.jpg" // <-- was img before
+  };
+
+  const titleEl = document.getElementById("title");
+  const textEl = document.getElementById("text");
+  const imgEl = document.getElementById("img");
+  const videoEl = document.getElementById("video");
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
+  const buttonsEl = document.querySelector(".buttons");
+  const valentineMsg = document.getElementById("valentineMsg");
+
+  let noIndex = -1;
+
+  // rename param to isLast so it's consistent
+function render(screen, mode = "normal") {
+  // mode: "normal" | "lastNo" | "final"
+
+  titleEl.textContent = screen.title;
+  textEl.textContent = screen.text || "";
+
+  if (screen.type === "video") {
+    imgEl.style.display = "none";
+    videoEl.style.display = "block";
+    videoEl.src = screen.src;
+    videoEl.load();
+    videoEl.play();
+  } else {
+    videoEl.pause();
+    videoEl.removeAttribute("src");
+    videoEl.load();
+    videoEl.style.display = "none";
+    imgEl.style.display = "block";
+    imgEl.src = screen.src;
+  }
+
+  if (mode === "final") {
+    buttonsEl.style.display = "none";
+    valentineMsg.style.display = "block";
+    return;
+  }
+
+  buttonsEl.style.display = "flex";
+  valentineMsg.style.display = "none";
+
+  noBtn.disabled = (mode === "lastNo");
+}
+  // initial
+  render(firstScreen, "normal");
+
+  yesBtn.addEventListener("click", () => {
+    render(yesScreen, "final"); // treat yes as final too (shows valentine msg, hides buttons)
+  });
+
+  noBtn.addEventListener("click", () => {
+    noIndex++;
+    if (noIndex >= noScreens.length) noIndex = noScreens.length - 1;
+
+    const isLastNoScreen = noIndex === noScreens.length - 1;
+    render(noScreens[noIndex], isLastNoScreen? "lastNo" : "normal");
+  });
+</script>
+
+    </body>
+</html>
